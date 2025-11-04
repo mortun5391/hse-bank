@@ -1,4 +1,3 @@
-// BankRepositoryProxy.java
 package hse.hsebank.proxy;
 
 import hse.hsebank.domains.BankAccount;
@@ -6,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -16,7 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 @Component
 public class BankRepositoryProxy implements BankRepository {
     private final BankRepository realRepository;
-    private final ConcurrentMap<UUID, BankAccount> cache = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, BankAccount> cache = new ConcurrentHashMap<>();
 
     public BankRepositoryProxy(BankRepositoryImpl realRepository) {
         this.realRepository = realRepository;
@@ -29,15 +27,13 @@ public class BankRepositoryProxy implements BankRepository {
     }
 
     @Override
-    public Optional<BankAccount> findById(UUID id) {
-        // Check cache first
+    public Optional<BankAccount> findById(String id) {
         BankAccount cached = cache.get(id);
         if (cached != null) {
             System.out.println("Returning from cache: " + id);
             return Optional.of(cached);
         }
 
-        // If not in cache, get from real repository and cache it
         Optional<BankAccount> account = realRepository.findById(id);
         account.ifPresent(acc -> cache.put(id, acc));
         return account;
@@ -45,13 +41,11 @@ public class BankRepositoryProxy implements BankRepository {
 
     @Override
     public List<BankAccount> findAll() {
-        // For simplicity, we'll use real repository for findAll
-        // In real scenario, we might cache the entire list or use more sophisticated caching
         return realRepository.findAll();
     }
 
     @Override
-    public void delete(UUID id) {
+    public void delete(String id) {
         realRepository.delete(id);
         cache.remove(id);
     }

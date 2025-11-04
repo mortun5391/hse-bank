@@ -29,10 +29,10 @@ public class ListCategoriesCommand implements Command {
         ConsolePrinter.printTableHeader(new String[]{"ID", "Type", "Name"});
 
         for (Category category : categories) {
-            String typeEmoji = category.isIncome() ? "💰" : "💸";
+
             ConsolePrinter.printTableRow(new String[]{
-                    category.getId().toString().substring(0, 8) + "...",
-                    typeEmoji + " " + category.getType().getDisplayName(),
+                    category.getId().substring(0, 8) + "...",
+                    " " + category.getType().getDisplayName(),
                     category.getName()
             });
         }

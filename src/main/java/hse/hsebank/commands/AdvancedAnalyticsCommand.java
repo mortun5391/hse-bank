@@ -59,7 +59,6 @@ public class AdvancedAnalyticsCommand implements Command {
 
         printFinancialSummary(todayIncome, todayExpenses, todayBalance);
 
-        // Show today's categories
         showPeriodCategories(
                 LocalDate.now().atStartOfDay(),
                 LocalDate.now().atTime(23, 59, 59),
@@ -120,7 +119,6 @@ public class AdvancedAnalyticsCommand implements Command {
 
         int limit = inputValidator.getIntInput("Enter number of top categories to show: ");
 
-        // Top income categories
         ConsolePrinter.printSubMenu("Top Income Categories");
         Map<String, BigDecimal> topIncome = analyticsFacade.getTopIncomeCategories(limit);
         if (topIncome.isEmpty()) {
@@ -131,7 +129,6 @@ public class AdvancedAnalyticsCommand implements Command {
             );
         }
 
-        // Top expense categories
         ConsolePrinter.printSubMenu("Top Expense Categories");
         Map<String, BigDecimal> topExpenses = analyticsFacade.getTopSpendingCategories(limit);
         if (topExpenses.isEmpty()) {
@@ -155,7 +152,6 @@ public class AdvancedAnalyticsCommand implements Command {
             );
         }
 
-        // Expenses by category
         ConsolePrinter.printSubMenu(periodName + " - Expenses by Category");
         Map<String, BigDecimal> expensesByCategory = analyticsFacade.getExpensesByCategory(start, end);
         if (expensesByCategory.isEmpty()) {
@@ -177,7 +173,6 @@ public class AdvancedAnalyticsCommand implements Command {
         ConsolePrinter.printTableRow(new String[]{balanceType, balanceDisplay});
         ConsolePrinter.printSeparator();
 
-        // Color-coded balance
         if (balance.compareTo(BigDecimal.ZERO) > 0) {
             ConsolePrinter.printSuccess(String.format("Positive balance: $%.2f", balance));
         } else if (balance.compareTo(BigDecimal.ZERO) < 0) {

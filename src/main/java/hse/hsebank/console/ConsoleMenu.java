@@ -35,7 +35,6 @@ public class ConsoleMenu {
 
             Command command = commands.get(choice);
             if (command != null) {
-                // Wrap command in decorator for timing
                 Command timedCommand = new TimedCommandDecorator(command);
                 timedCommand.execute();
             } else if (choice == 0) {

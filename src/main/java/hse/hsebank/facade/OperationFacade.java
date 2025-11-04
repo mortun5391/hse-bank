@@ -11,7 +11,7 @@ import java.util.*;
 
 @Component
 public class OperationFacade {
-    private final Map<UUID, Operation> operations = new HashMap<>();
+    private final Map<String, Operation> operations = new HashMap<>();
     private final DomainFactory domainFactory;
     private final BankAccountFacade bankAccountFacade;
     private final CategoryFacade categoryFacade;
@@ -24,13 +24,34 @@ public class OperationFacade {
         this.categoryFacade = categoryFacade;
     }
 
-    public Operation createOperation(UUID bankAccountId, UUID categoryId,
+    public Operation createOperation(String bankAccountId, String categoryId,
                                      CategoryType type, BigDecimal amount, String description) {
-        if (bankAccountFacade.getAccount(bankAccountId).isEmpty()) {
+        var accountOpt = bankAccountFacade.getAccount(bankAccountId);
+        if (accountOpt.isEmpty()) {
             throw new IllegalArgumentException("Bank account not found");
         }
-        if (categoryFacade.getCategory(categoryId).isEmpty()) {
+
+        var categoryOpt = categoryFacade.getCategory(categoryId);
+        if (categoryOpt.isEmpty()) {
             throw new IllegalArgumentException("Category not found");
+        }
+
+        if (type == CategoryType.OUTCOME) {
+            var account = accountOpt.get();
+            if (account.getBalance().compareTo(amount) < 0) {
+                throw new IllegalArgumentException(
+                        String.format("Insufficient funds. Current balance: %.2f, required: %.2f",
+                                account.getBalance(), amount)
+                );
+            }
+        }
+
+        var category = categoryOpt.get();
+        if (category.getType() != type) {
+            throw new IllegalArgumentException(
+                    String.format("Category type mismatch. Category '%s' is for %s, but operation is %s",
+                            category.getName(), category.getType().getDisplayName(), type.getDisplayName())
+            );
         }
 
         Operation operation = domainFactory.createOperation(bankAccountId, categoryId, type, amount, description);
@@ -43,7 +64,47 @@ public class OperationFacade {
         return operation;
     }
 
-    public Optional<Operation> getOperation(UUID id) {
+    public Operation createOperationWithId(String id, String bankAccountId, String categoryId,
+                                           CategoryType type, BigDecimal amount, String description, LocalDateTime date) {
+        var accountOpt = bankAccountFacade.getAccount(bankAccountId);
+        if (accountOpt.isEmpty()) {
+            throw new IllegalArgumentException("Bank account not found: " + bankAccountId);
+        }
+
+        var categoryOpt = categoryFacade.getCategory(categoryId);
+        if (categoryOpt.isEmpty()) {
+            throw new IllegalArgumentException("Category not found: " + categoryId);
+        }
+
+        if (type == CategoryType.OUTCOME) {
+            var account = accountOpt.get();
+            if (account.getBalance().compareTo(amount) < 0) {
+                throw new IllegalArgumentException(
+                        String.format("Insufficient funds. Current balance: %.2f, required: %.2f",
+                                account.getBalance(), amount)
+                );
+            }
+        }
+
+        var category = categoryOpt.get();
+        if (category.getType() != type) {
+            throw new IllegalArgumentException(
+                    String.format("Category type mismatch. Category '%s' is for %s, but operation is %s",
+                            category.getName(), category.getType().getDisplayName(), type.getDisplayName())
+            );
+        }
+
+        Operation operation = new Operation(id, bankAccountId, categoryId, type, amount, date, description);
+        operations.put(operation.getId(), operation);
+
+        bankAccountFacade.getAccount(bankAccountId).ifPresent(
+                account -> account.processOperation(operation)
+        );
+
+        return operation;
+    }
+
+    public Optional<Operation> getOperation(String id) {
         return Optional.ofNullable(operations.get(id));
     }
 
@@ -51,13 +112,13 @@ public class OperationFacade {
         return new ArrayList<>(operations.values());
     }
 
-    public List<Operation> getOperationsByAccount(UUID accountId) {
+    public List<Operation> getOperationsByAccount(String accountId) {
         return operations.values().stream()
                 .filter(op -> op.getBankAccountId().equals(accountId))
                 .toList();
     }
 
-    public List<Operation> getOperationsByCategory(UUID categoryId) {
+    public List<Operation> getOperationsByCategory(String categoryId) {
         return operations.values().stream()
                 .filter(op -> op.getCategoryId().equals(categoryId))
                 .toList();
@@ -69,7 +130,7 @@ public class OperationFacade {
                 .toList();
     }
 
-    public boolean deleteOperation(UUID id) {
+    public boolean deleteOperation(String id) {
         return operations.remove(id) != null;
     }
 }

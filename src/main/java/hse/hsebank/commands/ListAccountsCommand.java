@@ -30,7 +30,7 @@ public class ListAccountsCommand implements Command {
 
         for (BankAccount account : accounts) {
             ConsolePrinter.printTableRow(new String[]{
-                    account.getId().toString().substring(0, 8) + "...",
+                    account.getId().substring(0, 8) + "...",
                     account.getName(),
                     String.format("$%.2f", account.getBalance())
             });

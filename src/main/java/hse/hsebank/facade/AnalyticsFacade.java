@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -145,7 +144,7 @@ public class AnalyticsFacade {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public BigDecimal getCurrentBalance(UUID accountId) {
+    public BigDecimal getCurrentBalance(String accountId) {
         return operationFacade.getOperationsByAccount(accountId).stream()
                 .map(op -> op.isIncome() ? op.getAmount() : op.getAmount().negate())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);

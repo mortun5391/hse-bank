@@ -29,12 +29,11 @@ public class ListOperationsCommand implements Command {
         ConsolePrinter.printTableHeader(new String[]{"ID", "Type", "Amount", "Date", "Description"});
 
         for (Operation operation : operations) {
-            String typeEmoji = operation.isIncome() ? "⬆️" : "⬇️";
             String amountColor = operation.isIncome() ? "+$" : "-$";
 
             ConsolePrinter.printTableRow(new String[]{
-                    operation.getId().toString().substring(0, 8) + "...",
-                    typeEmoji + " " + operation.getType().getDisplayName(),
+                    operation.getId().substring(0, 8) + "...",
+                    " " + operation.getType().getDisplayName(),
                     amountColor + String.format("%.2f", operation.getAmount()),
                     operation.getDate().toLocalDate().toString(),
                     operation.getDescription().length() > 15 ?

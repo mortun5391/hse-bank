@@ -1,12 +1,11 @@
-// Category.java
 package hse.hsebank.domains;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import hse.hsebank.domains.enums.CategoryType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.UUID;
 
 /**
  * Operation category
@@ -14,7 +13,7 @@ import java.util.UUID;
 @ToString
 public class Category {
     @Getter
-    private final UUID id;
+    private final String id;
 
     @Getter @Setter
     private CategoryType type;
@@ -22,8 +21,11 @@ public class Category {
     @Getter @Setter
     private String name;
 
-    public Category(UUID id, CategoryType type, String name) {
-        if (id == null) {
+    @JsonCreator
+    public Category(@JsonProperty("id") String id,
+                    @JsonProperty("type") CategoryType type,
+                    @JsonProperty("name") String name) {
+        if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("Category ID cannot be null");
         }
         if (type == null) {
@@ -33,7 +35,7 @@ public class Category {
             throw new IllegalArgumentException("Category name cannot be empty");
         }
 
-        this.id = id;
+        this.id = id.trim();
         this.type = type;
         this.name = name.trim();
     }

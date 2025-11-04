@@ -1,4 +1,3 @@
-// InputValidator.java
 package hse.hsebank.utils;
 
 import hse.hsebank.domains.enums.CategoryType;
@@ -6,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.InputMismatchException;
-import java.util.UUID;
 
 /**
  * Input data validator
@@ -62,14 +60,18 @@ public class InputValidator {
         }
     }
 
-    public UUID getUUIDInput(String prompt) {
+    public String getIdInput(String prompt) {
         while (true) {
-            try {
-                System.out.print(prompt);
-                String input = inputProvider.nextLine().trim();
-                return UUID.fromString(input);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Error: invalid UUID format.");
+            System.out.print(prompt);
+            String input = inputProvider.nextLine().trim();
+            if (!input.isEmpty()) {
+                if (input.length() == 8 && ShortUUID.isValidShortId(input)) {
+                    return input;
+                } else {
+                    System.out.println("Error: ID must be exactly 8 hexadecimal characters (0-9, a-f)");
+                }
+            } else {
+                System.out.println("Error: ID cannot be empty.");
             }
         }
     }

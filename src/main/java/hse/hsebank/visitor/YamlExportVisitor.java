@@ -1,8 +1,11 @@
 package hse.hsebank.visitor;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import hse.hsebank.domains.BankAccount;
 import hse.hsebank.domains.Category;
@@ -15,14 +18,14 @@ import java.io.IOException;
 import java.util.*;
 
 @Component
-public class JsonExportVisitor implements DataExportVisitor {
-    private final ObjectMapper objectMapper;
+public class YamlExportVisitor implements DataExportVisitor {
+    private final ObjectMapper yamlMapper;
 
-    public JsonExportVisitor() {
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.registerModule(new JavaTimeModule());
-        this.objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+    public YamlExportVisitor() {
+        this.yamlMapper = new ObjectMapper(new YAMLFactory());
+        this.yamlMapper.registerModule(new JavaTimeModule());
+        this.yamlMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        this.yamlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     @Override
@@ -36,9 +39,10 @@ public class JsonExportVisitor implements DataExportVisitor {
                 accMap.put("balance", account.getBalance());
                 simplifiedAccounts.add(accMap);
             }
-            return objectMapper.writeValueAsString(simplifiedAccounts);
+
+            return yamlMapper.writeValueAsString(simplifiedAccounts);
         } catch (JsonProcessingException e) {
-            System.err.println("Error serializing accounts to JSON: " + e.getMessage());
+            System.err.println("Error serializing accounts to YAML: " + e.getMessage());
             return "[]";
         }
     }
@@ -54,9 +58,10 @@ public class JsonExportVisitor implements DataExportVisitor {
                 catMap.put("name", category.getName());
                 simplifiedCategories.add(catMap);
             }
-            return objectMapper.writeValueAsString(simplifiedCategories);
+
+            return yamlMapper.writeValueAsString(simplifiedCategories);
         } catch (JsonProcessingException e) {
-            System.err.println("Error serializing categories to JSON: " + e.getMessage());
+            System.err.println("Error serializing categories to YAML: " + e.getMessage());
             return "[]";
         }
     }
@@ -76,9 +81,10 @@ public class JsonExportVisitor implements DataExportVisitor {
                 opMap.put("description", operation.getDescription());
                 simplifiedOperations.add(opMap);
             }
-            return objectMapper.writeValueAsString(simplifiedOperations);
+
+            return yamlMapper.writeValueAsString(simplifiedOperations);
         } catch (JsonProcessingException e) {
-            System.err.println("Error serializing operations to JSON: " + e.getMessage());
+            System.err.println("Error serializing operations to YAML: " + e.getMessage());
             return "[]";
         }
     }
@@ -93,10 +99,10 @@ public class JsonExportVisitor implements DataExportVisitor {
         allData.put("version", "1.0");
 
         try {
-            return objectMapper.writeValueAsString(allData);
+            return yamlMapper.writeValueAsString(allData);
         } catch (JsonProcessingException e) {
-            System.err.println("Error serializing all data to JSON: " + e.getMessage());
-            return "{}";
+            System.err.println("Error serializing all data to YAML: " + e.getMessage());
+            return "";
         }
     }
 
@@ -131,12 +137,12 @@ public class JsonExportVisitor implements DataExportVisitor {
             allData.put("exportTimestamp", java.time.LocalDateTime.now().toString());
             allData.put("version", "1.0");
 
-            String jsonContent = objectMapper.writeValueAsString(allData);
-            writer.write(jsonContent);
-            System.out.println("JSON data successfully exported to: " + filePath);
+            String yamlContent = yamlMapper.writeValueAsString(allData);
+            writer.write(yamlContent);
+            System.out.println("YAML data successfully exported to: " + filePath);
             return true;
         } catch (IOException e) {
-            System.err.println("Error writing JSON file: " + e.getMessage());
+            System.err.println("Error writing YAML file: " + e.getMessage());
             return false;
         }
     }
@@ -159,6 +165,6 @@ public class JsonExportVisitor implements DataExportVisitor {
 
     @Override
     public String getSupportedFormat() {
-        return "JSON";
+        return "YAML";
     }
 }

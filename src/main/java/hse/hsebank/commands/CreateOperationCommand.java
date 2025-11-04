@@ -23,8 +23,8 @@ public class CreateOperationCommand implements Command {
     public void execute() {
         System.out.println("\n=== Create Operation ===");
 
-        UUID accountId = inputValidator.getUUIDInput("Enter bank account ID: ");
-        UUID categoryId = inputValidator.getUUIDInput("Enter category ID: ");
+        String accountId = inputValidator.getIdInput("Enter bank account ID: ");
+        String categoryId = inputValidator.getIdInput("Enter category ID: ");
         CategoryType type = inputValidator.getCategoryTypeInput("Enter operation type (INCOME/OUTCOME): ");
         BigDecimal amount = inputValidator.getBigDecimalInput("Enter amount: ");
         String description = inputValidator.getStringInput("Enter description: ");

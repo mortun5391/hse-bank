@@ -9,7 +9,7 @@ import java.util.*;
 
 @Component
 public class CategoryFacade {
-    private final Map<UUID, Category> categories = new HashMap<>();
+    private final Map<String, Category> categories = new HashMap<>();
     private final DomainFactory domainFactory;
 
     public CategoryFacade(DomainFactory domainFactory) {
@@ -22,7 +22,13 @@ public class CategoryFacade {
         return category;
     }
 
-    public Optional<Category> getCategory(UUID id) {
+    public Category createCategoryWithId(String id, CategoryType type, String name) {
+        Category category = new Category(id, type, name);
+        categories.put(category.getId(), category);
+        return category;
+    }
+
+    public Optional<Category> getCategory(String id) {
         return Optional.ofNullable(categories.get(id));
     }
 
@@ -36,7 +42,7 @@ public class CategoryFacade {
                 .toList();
     }
 
-    public boolean updateCategory(UUID id, String newName, CategoryType newType) {
+    public boolean updateCategory(String id, String newName, CategoryType newType) {
         Category category = categories.get(id);
         if (category != null) {
             category.setName(newName);
@@ -46,7 +52,7 @@ public class CategoryFacade {
         return false;
     }
 
-    public boolean deleteCategory(UUID id) {
+    public boolean deleteCategory(String id) {
         return categories.remove(id) != null;
     }
 }

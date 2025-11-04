@@ -18,7 +18,7 @@ public class BalanceRecalculationService {
         this.operationFacade = operationFacade;
     }
 
-    public void recalculateBalance(UUID accountId) {
+    public void recalculateBalance(String  accountId) {
         BankAccount account = bankAccountFacade.getAccount(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
 

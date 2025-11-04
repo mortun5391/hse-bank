@@ -34,19 +34,19 @@ public class ConsolePrinter {
     }
 
     public static void printSuccess(String message) {
-        System.out.println("✅ " + message);
+        System.out.println(" " + message);
     }
 
     public static void printError(String message) {
-        System.out.println("❌ Error: " + message);
+        System.out.println(" Error: " + message);
     }
 
     public static void printInfo(String message) {
-        System.out.println("ℹ️  " + message);
+        System.out.println(" " + message);
     }
 
     public static void printWarning(String message) {
-        System.out.println("⚠️  " + message);
+        System.out.println(" " + message);
     }
 
     public static void printSeparator() {

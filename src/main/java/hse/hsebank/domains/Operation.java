@@ -1,25 +1,26 @@
 package hse.hsebank.domains;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import hse.hsebank.domains.enums.CategoryType;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * Financial operation (income or expense)
  */
 public class Operation {
     @Getter
-    private final UUID id;
+    private final String id;
 
     @Getter @Setter
-    private UUID bankAccountId;
+    private String bankAccountId;
 
     @Getter @Setter
-    private UUID categoryId;
+    private String categoryId;
 
     @Getter
     private CategoryType type;
@@ -33,8 +34,15 @@ public class Operation {
     @Getter @Setter
     private String description;
 
-    public Operation(UUID id, UUID bankAccountId, UUID categoryId, CategoryType type,
-                     BigDecimal amount, String description) {
+    // Единственный конструктор с аннотациями Jackson
+    @JsonCreator
+    public Operation(@JsonProperty("id") String id,
+                     @JsonProperty("bankAccountId") String bankAccountId,
+                     @JsonProperty("categoryId") String categoryId,
+                     @JsonProperty("type") CategoryType type,
+                     @JsonProperty("amount") BigDecimal amount,
+                     @JsonProperty("date") LocalDateTime date,
+                     @JsonProperty("description") String description) {
         validateInput(id, bankAccountId, categoryId, type, amount);
 
         this.id = id;
@@ -42,19 +50,25 @@ public class Operation {
         this.categoryId = categoryId;
         this.type = type;
         this.amount = amount;
-        this.date = LocalDateTime.now();
+        this.date = date != null ? date : LocalDateTime.now();
         this.description = description != null ? description.trim() : "";
     }
 
-    private void validateInput(UUID id, UUID bankAccountId, UUID categoryId,
+    public static Operation createNew(String bankAccountId, String categoryId, CategoryType type,
+                                      BigDecimal amount, String description) {
+        String shortId = hse.hsebank.utils.ShortUUID.generate();
+        return new Operation(shortId, bankAccountId, categoryId, type, amount, LocalDateTime.now(), description);
+    }
+
+    private void validateInput(String id, String bankAccountId, String categoryId,
                                CategoryType type, BigDecimal amount) {
-        if (id == null) {
+        if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("Operation ID cannot be null");
         }
-        if (bankAccountId == null) {
+        if (bankAccountId == null || bankAccountId.trim().isEmpty()) {
             throw new IllegalArgumentException("Bank account ID cannot be null");
         }
-        if (categoryId == null) {
+        if (categoryId == null || categoryId.trim().isEmpty()) {
             throw new IllegalArgumentException("Category ID cannot be null");
         }
         if (type == null) {

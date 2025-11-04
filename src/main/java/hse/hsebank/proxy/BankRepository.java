@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface BankRepository {
     void save(BankAccount account);
-    Optional<BankAccount> findById(UUID id);
+    Optional<BankAccount> findById(String id);
     List<BankAccount> findAll();
-    void delete(UUID id);
+    void delete(String id);
 }

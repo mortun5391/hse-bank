@@ -1,12 +1,12 @@
-// BankAccount.java (дополненный)
 package hse.hsebank.domains;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 /**
  * Bank account
@@ -14,7 +14,7 @@ import java.util.UUID;
 @ToString
 public class BankAccount {
     @Getter
-    private final UUID id;
+    private final String id;
 
     @Getter @Setter
     private String name;
@@ -22,13 +22,25 @@ public class BankAccount {
     @Getter
     private BigDecimal balance;
 
-    public BankAccount(String name, UUID id) {
+    @JsonCreator
+    public BankAccount(@JsonProperty("id") String id,
+                       @JsonProperty("name") String name,
+                       @JsonProperty("balance") BigDecimal balance) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Account name cannot be empty");
         }
+        if (id == null || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("Account ID cannot be empty");
+        }
+
         this.name = name.trim();
-        this.id = id;
-        this.balance = BigDecimal.ZERO;
+        this.id = id.trim();
+        this.balance = balance != null ? balance : BigDecimal.ZERO;
+    }
+
+    public static BankAccount createNew(String name) {
+        String shortId = hse.hsebank.utils.ShortUUID.generate();
+        return new BankAccount(shortId, name, BigDecimal.ZERO);
     }
 
     /**
@@ -74,5 +86,4 @@ public class BankAccount {
         }
         this.balance = newBalance;
     }
-
 }

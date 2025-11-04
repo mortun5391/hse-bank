@@ -7,7 +7,7 @@ import java.util.*;
 
 @Component
 public class BankRepositoryImpl implements BankRepository {
-    private final Map<UUID, BankAccount> database = new HashMap<>();
+    private final Map<String, BankAccount> database = new HashMap<>();
 
     @Override
     public void save(BankAccount account) {
@@ -16,7 +16,7 @@ public class BankRepositoryImpl implements BankRepository {
     }
 
     @Override
-    public Optional<BankAccount> findById(UUID id) {
+    public Optional<BankAccount> findById(String id) {
         System.out.println("Reading from database: " + id);
         return Optional.ofNullable(database.get(id));
     }
@@ -28,7 +28,7 @@ public class BankRepositoryImpl implements BankRepository {
     }
 
     @Override
-    public void delete(UUID id) {
+    public void delete(String id) {
         System.out.println("Deleting from database: " + id);
         database.remove(id);
     }
