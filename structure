@@ -1,0 +1,56 @@
+src/
+├── main/
+│   ├── java/
+│   │   └── hse/
+│   │       └── hsebank/
+│   │           ├── HseBankApplication.java
+│   │           ├── config/
+│   │           │   └── AppConfig.java
+│   │           ├── domains/
+│   │           │   ├── BankAccount.java
+│   │           │   ├── Category.java
+│   │           │   └── Operation.java
+│   │           ├── domains/enums/
+│   │           │   └── CategoryType.java
+│   │           ├── factories/
+│   │           │   ├── DomainFactory.java
+│   │           │   └── DomainFactoryImpl.java
+│   │           ├── facade/
+│   │           │   ├── BankAccountFacade.java
+│   │           │   ├── CategoryFacade.java
+│   │           │   ├── OperationFacade.java
+│   │           │   └── AnalyticsFacade.java
+│   │           ├── commands/
+│   │           │   ├── Command.java
+│   │           │   ├── CreateAccountCommand.java
+│   │           │   ├── CreateCategoryCommand.java
+│   │           │   ├── CreateOperationCommand.java
+│   │           │   └── ShowAnalyticsCommand.java
+│   │           ├── decorators/
+│   │           │   └── TimedCommandDecorator.java
+│   │           ├── template/
+│   │           │   ├── DataImporter.java
+│   │           │   ├── CsvDataImporter.java
+│   │           │   ├── JsonDataImporter.java
+│   │           │   └── YamlDataImporter.java
+│   │           ├── visitor/
+│   │           │   ├── DataExportVisitor.java
+│   │           │   ├── CsvExportVisitor.java
+│   │           │   ├── JsonExportVisitor.java
+│   │           │   └── YamlExportVisitor.java
+│   │           ├── proxy/
+│   │           │   ├── BankRepository.java
+│   │           │   ├── BankRepositoryImpl.java
+│   │           │   └── BankRepositoryProxy.java
+│   │           ├── service/
+│   │           │   ├── BalanceRecalculationService.java
+│   │           │   └── StatisticsService.java
+│   │           └── utils/
+│   │               ├── InputProvider.java
+│   │               ├── ScannerInputProvider.java
+│   │               └── InputValidator.java
+│   └── resources/
+│       └── application.properties
+└── test/
+    └── java/
+        └── hse/hsebank/
