@@ -1,0 +1,87 @@
+package hse.hsebank;
+
+//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
+// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+public class Main {
+    public static void main(String[] args) {
+        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
+        // to see how IntelliJ IDEA suggests fixing it.
+        System.out.printf("Hello and welcome!");
+
+        for (int i = 1; i <= 5; i++) {
+            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
+            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
+            System.out.println("i = " + i);
+        }
+    }
+}package hse.hsebank.domains;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+public class BankAccount {
+    @Getter
+    @Setter
+    private UUID id;
+    @Getter
+    @Setter
+    private String name;
+    @Getter
+    @Setter
+    private BigDecimal balance;
+
+    public BankAccount(String name, UUID id) {
+        this.name = name;
+        this.id = id;
+        this.balance = new BigDecimal(0);
+    }
+}
+package hse.hsebank.domains;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.UUID;
+
+public class Operation {
+    @Getter
+    @Setter
+    private UUID id;
+    @Getter
+    @Setter
+    private
+}
+package hse.hsebank.domains.enums;
+
+public enum CategoryType {
+    INCOME,
+    OUTCOME
+}
+package hse.hsebank.domains;
+
+import hse.hsebank.domains.enums.CategoryType;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.UUID;
+
+public class Category {
+    @Getter
+    @Setter
+    private UUID id;
+    @Getter
+    @Setter
+    private CategoryType type;
+    @Getter
+    @Setter
+    private String name;
+
+        public Category(UUID id, CategoryType type, String name) {
+            this.id = id;
+        this.type = type;
+        this.name = name;
+    }
+}
